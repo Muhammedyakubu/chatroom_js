@@ -1,0 +1,20 @@
+{
+  "name": "chatroom_js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./server/server.js",
+  "scripts": {
+    "devStart": "nodemon server/server.js"
+  },
+  "keywords": [],
+  "author": "Muhammed Yakubu <m.yakubu@mail.utoronto.ca>",
+  "license": "ISC",
+  "dependencies": {
+    "socket.io": "^4.4.1",
+    "socket.io-client": "^4.4.1",
+    "ws": "^8.4.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
