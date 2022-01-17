@@ -20,10 +20,14 @@
         }
 
         .content {
-            max-width: 500px;
+            width: 700px;
             margin: auto;
             border: 1px solid #dfdfdf;
             border-radius: 10px;
+        }
+
+        #main-doc {
+            margin: auto;
         }
 
         .messages-container {
@@ -38,7 +42,7 @@
             border: 0px solid darkgrey;
             border-radius: 0.5em;
             margin: 1em;
-            max-width: 50%;
+            max-width: 60%;
             padding: 5px;
             box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
         }
@@ -52,8 +56,7 @@
         .received {
             background-color: #eceff1;
             color: black;
-            float: inline-end;
-            
+            float: left;
         }
 
         #send-container,
@@ -95,6 +98,10 @@
             box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px;
         }
 
+        .alert {
+            text-align: center;
+        }
+
         @keyframes modal-animation {
             from {
                 top: -100px;
@@ -108,24 +115,9 @@
     </style>
 </head>
 <body>
-
-    <form id="login" class="container hidden">
-        <label for="name-input">Name</label><br>
-        <input type="text" id="name-input" placeholder="your name here..."><br>
-        <button type="submit" id="set-name">set username</button>
-    </form>
     
-    <div class="content">
+    <section id="main-doc">
 
-        <div class="messages-container">
-            <button id="sign-out">Sign Out</button>
-        </div>
-
-        <form id="send-container">
-            <input type="text" id="message-input" placeholder="new message...">
-            <button type="submit" id="send-button">send</button>
-        </form>
-        
-    </div>
+    </section>
 </body>
 </html>

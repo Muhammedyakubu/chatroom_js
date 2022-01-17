@@ -7,16 +7,30 @@ Plan for chat app
         - if there is a username, check if the username exists on the server (to prevent injection)
         - if it does, then we can flash a green bar that says "Logged in as ${username}"
         - Otherwise we redirect to the login page and ask them to select a username
+        - once user is authenticated then query for the chats and use a client-side function to load them in
     - alternatively, have socket connect and use that to check if user is logged in (by sending an "authenticated" event once user is logged in for "user joined" notifications).
     - if user logged in the display chat page. Otherwise diplay the login page.
     - play sounds on user connect and message send/receive
-- make express api with mongoose database
+    - for the client-side socket set autoconnect to false and manually connect after verifying username
+- make a REST api using express and a mongoose database
     - To query for users: "GET myserver/users/:username" should return the user object (or username for the MVP) if it exists, or a null if it doesn't
         - maybe for my users use the schema:
-         user = {
-            id = Date.now().toString(),
-            username
+        user = {
+            id: Date.now().toString(), //when the account was made. will not exist for the MVP
+            username: username
+        }
+        - and for chats use: 
+        chat = {
+            id: Date.now().toString() /* + chat.sentBy? */, //on the server side
+            content: input.value,
+            sentBy: username,
+            timeSent: Date.now().toString(), //this is on the client side
         }
     - To create a new user: "POST myserver/users/:username" should add the username to the database of users
     - To query for chats: myserver/chats should return an array containing a list of chat objects
-- make a global chat first, push to internet and then work on more features like different rooms and private messaging
+    - On the socket "message" event, call a function "addToDatabase" to store the chat in the database
+    - Maybe on the server side, verify that the user "sentBy" field of the message is an actual user (to prevent injection)
+        - this would just use the "getUserByUsername" function
+- make a global chat first, push to internet and then work on more features lik
+    - different rooms and private messaging
+    - chat history

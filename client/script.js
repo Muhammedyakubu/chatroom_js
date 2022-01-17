@@ -1,20 +1,70 @@
-const SERVER = "http://localhost:8080"
-const socket = io(SERVER);
+const SERVER = "http://localhost:8080";
+const socket = io(SERVER, {
+	autoConnect: false,
+});
 
 const messageContainer = document.querySelector(".messages-container");
 const loginModal = document.querySelector("#login");
-const content = document.querySelector(".content");
+const main = document.querySelector("#main-doc");
 const signOut = document.querySelector("#sign-out");
 
+pages = {
+	login: `
+	<form id="login" class="container">
+        <label for="name-input">Name</label><br>
+        <input type="text" id="name-input" placeholder="your name here..."><br>
+        <button id="set-name">set username</button>
+    </form>
+	`,
+	chat: `
+	<div class="content">
+            <div class="messages-container">
+                <button id="sign-out">Sign Out</button>
+            </div>
+    
+            <form id="send-container">
+                <input type="text" id="message-input" placeholder="new message...">
+                <button id="send-button">send</button>
+            </form>
+	</div>`,
+};
 
-let users = [];
+document.addEventListener('click', (e) => {
+  let input;
+  e.preventDefault();
+  switch (e.target.id) {
+    case "set-name":
+      input = document.querySelector("#name-input");
+      username = input.value;
+      break;
+
+    case "sign-out":
+      localStorage.setItem("username", null);
+	    //location.reload();  
+      break;
+
+    case "send-button":
+      input = document.querySelector("#message-input");
+      const chat = {
+        content: input.value,
+        sentBy: username,
+        timeSent: Date.now().toString(),
+      };
+      socket.emit("message", JSON.stringify(chat));
+      input.value = "";
+      break;
+  }
+})
+
+loadPage("chat");
 
 let username;
-window.onload = () => {
+/* window.onload = () => {
 	username = JSON.parse(localStorage.getItem("username"));
 	while (!username || username == "null") {
 		//check username
 		if (users.includes(username)) {
+			//change this to an api call that checks for the user
 			username = prompt(
 				"Username exsists!! Please choose something else"
 			);
@@ -23,35 +73,34 @@ window.onload = () => {
 				"Invalid username!! Please choose something else"
 			);
 		} else {
-			username = prompt("Hey there! What's your name");
+			username = prompt("Hey there! Please select your username");
 		}
 		localStorage.setItem("username", JSON.stringify(username));
 	}
-};
+	socket.connect();
+}; */
 
-signOut.addEventListener("click", () => {
-	localStorage.setItem("username", null);
-	location.reload();
-});
-
-loginModal.addEventListener("submit", (e) => {
-	e.preventDefault();
-	const input = document.querySelector("#name-input");
-	username = input.value;
-	loginModal.classList.toggle("hidden");
-	content.classList.toggle("hidden");
-});
-
-function login() {
-	loginModal.classList.toggle("hidden");
-	content.classList.add("hidden");
+function loadPage(page) {
+	switch (page) {
+		case "login":
+      console.log( `loaded ${page} page`);
+			main.innerHTML = pages.login;
+			break;
+		case "chat":
+      console.log( `loaded ${page} page`);
+			main.innerHTML = pages.chat;
+			break;
+		default:
+      //console.log(page);
+			main.innerHTML = pages.login;
+	}
 }
 
 function alertAction(user, action) {
 	const el = document.createElement("h5");
 	el.innerHTML = (user == username ? "You" : user) + " " + action;
 	console.log(el.innerHTML);
-	el.classList.add("alert", "new-user");
+	el.classList.add("alert");
 	messageContainer.append(el);
 	el.scrollIntoView();
 }
@@ -65,6 +114,11 @@ function appendMessage(chat) {
 	el.classList.add(chat.sentBy === username ? "sent" : "received");
 	messageContainer.appendChild(el);
 	el.scrollIntoView();
+}
+
+function loadMessages() {
+  //query api endpoint 
+  chats.forEach( chat => appendMessage(chat));
 }
 
 socket.on("connect", () => {
@@ -85,7 +139,7 @@ socket.on("user-disconnected", (user) => {
 	alertAction(user, "left");
 });
 
-document.querySelector("#send-button").onclick = (e) => {
+/* document.querySelector("#send-button").onclick = (e) => {
 	e.preventDefault();
 	const input = document.querySelector("#message-input");
 	const chat = {
@@ -95,4 +149,6 @@ document.querySelector("#send-button").onclick = (e) => {
 	};
 	socket.emit("message", JSON.stringify(chat));
 	input.value = "";
-};
+}; */
+
+
