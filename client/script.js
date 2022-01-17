@@ -3,10 +3,7 @@ const socket = io(SERVER, {
 	autoConnect: false,
 });
 
-const messageContainer = document.querySelector(".messages-container");
-const loginModal = document.querySelector("#login");
 const main = document.querySelector("#main-doc");
-const signOut = document.querySelector("#sign-out");
 
 pages = {
 	login: `
@@ -18,8 +15,9 @@ pages = {
 	`,
 	chat: `
 	<div class="content">
+            <button id="sign-out">Sign Out</button>
             <div class="messages-container">
-                <button id="sign-out">Sign Out</button>
+                
             </div>
     
             <form id="send-container">
@@ -29,102 +27,158 @@ pages = {
 	</div>`,
 };
 
-document.addEventListener('click', (e) => {
-  let input;
-  e.preventDefault();
-  switch (e.target.id) {
-    case "set-name":
-      input = document.querySelector("#name-input");
-      username = input.value;
-      break;
-
-    case "sign-out":
-      localStorage.setItem("username", null);
-	    //location.reload();  
-      break;
-
-    case "send-button":
-      input = document.querySelector("#message-input");
-      const chat = {
-        content: input.value,
-        sentBy: username,
-        timeSent: Date.now().toString(),
-      };
-      socket.emit("message", JSON.stringify(chat));
-      input.value = "";
-      break;
-  }
-})
-
-loadPage("chat");
+//===========EVENT LISTENERS=============//
 
 let username;
-/* window.onload = () => {
-	username = JSON.parse(localStorage.getItem("username"));
-	while (!username || username == "null") {
-		//check username
+
+window.onload = () => {
+	username = localStorage.getItem("username");
+	authenticateUser(username);
+};
+document.addEventListener("click", (e) => {
+	let input;
+	e.preventDefault();
+	switch (e.target.id) {
+		case "set-name": //login button
+			input = document.querySelector("#name-input");
+			username = input.value;
+			createUser(username);
+			break;
+
+		case "sign-out":
+			localStorage.setItem("username", null);
+			location.reload();
+			break;
+
+		case "send-button":
+			input = document.querySelector("#message-input");
+			const chat = {
+				content: input.value,
+				sentBy: username,
+				timeSent: Date.now(),
+			};
+			socket.emit("message", JSON.stringify(chat));
+			input.value = "";
+			break;
+	}
+});
+
+//=================HELPER FUNCTIONS=================//
+
+function authenticateUser(username) {
+	if (!username || username == "null" || username == "undefined") {
+		loadPage("login");
+	} else {
+		fetch(SERVER + "/api/users/" + username)
+			.then((res) => {
+				if (res.ok) {
+					console.log("fetch Successful");
+          loadPage("chat")
+				} else {
+					console.log("fetch not successful");
+          loadPage("login")
+				}
+				console.log("res:", res);
+				return res.json();
+			})
+			.then((data) => {
+				console.log("data:", data);
+				data ? socket.connect() : loadPage("login");
+			});
+	}
+}
+
+function createUser(username) {
+	console.log("This is going to create a new user with name:", username);
+	//=>for now I'll use the sockets to create the user
+
+	//check that the username is valid
+	if (!username || username == "null" || username == "undefined") {
+		loadPage("login");
+	} else {
+		//open the socket -> which also creates a new user
+		loadPage("chat");
+		socket.connect();
+	}
+
+	//=>later I'll change to using a post method
+
+	//create a new user with a post request. then if there is connect
+	//then resirect to chats page
+}
+
+//=> This us an unused function
+function verifyUser(username) {
+	if (!username || username == "null" || username == "undefined") {
+		//load login page
+		loadPage("login");
+
+		//could move all this logic to the backend
+		let message;
 		if (users.includes(username)) {
 			//change this to an api call that checks for the user
-			username = prompt(
-				"Username exsists!! Please choose something else"
-			);
+			message = "Username exsists!! Please choose something else";
 		} else if (username == "null") {
-			username = prompt(
-				"Invalid username!! Please choose something else"
-			);
+			message = "Invalid username!! Please choose something else";
 		} else {
-			username = prompt("Hey there! Please select your username");
+			message = "Hey there! Please select your username";
 		}
-		localStorage.setItem("username", JSON.stringify(username));
+		localStorage.setItem("username", username);
 	}
-	socket.connect();
-}; */
+}
 
 function loadPage(page) {
 	switch (page) {
 		case "login":
-      console.log( `loaded ${page} page`);
+			console.log(`loaded ${page} page`);
 			main.innerHTML = pages.login;
 			break;
+
 		case "chat":
-      console.log( `loaded ${page} page`);
+			console.log(`loaded ${page} page`);
 			main.innerHTML = pages.chat;
 			break;
+
 		default:
-      //console.log(page);
 			main.innerHTML = pages.login;
 	}
 }
 
 function alertAction(user, action) {
 	const el = document.createElement("h5");
-	el.innerHTML = (user == username ? "You" : user) + " " + action;
+	if (user) {
+		el.innerHTML = (user == username ? "You" : user) + " " + action;
+	} else {
+		el.innerHTML = action;
+	}
 	console.log(el.innerHTML);
 	el.classList.add("alert");
-	messageContainer.append(el);
+	document.querySelector(".messages-container").append(el);
 	el.scrollIntoView();
 }
 
 function appendMessage(chat) {
 	const el = document.createElement("div");
-	el.innerHTML = `<h5>${chat.sentBy == username ? "You" : chat.sentBy}</h5>
+	el.innerHTML = `<h6>${chat.sentBy == username ? "You" : chat.sentBy}</h6>
     <p>${chat.content}</p>
     <h6>${new Date(chat.timeSent).toLocaleTimeString()}</h6>`;
 	el.classList.add("message");
 	el.classList.add(chat.sentBy === username ? "sent" : "received");
-	messageContainer.appendChild(el);
+	document.querySelector(".messages-container").appendChild(el);
 	el.scrollIntoView();
 }
 
-function loadMessages() {
-  //query api endpoint 
-  chats.forEach( chat => appendMessage(chat));
-}
+//==========SOCKET CONTROLLERS=========//
 
 socket.on("connect", () => {
 	console.log(socket.id, username);
+	localStorage.setItem("username", username);
 	socket.emit("new-user", username);
 });
+
+socket.on("load-messages", (chats) => {
+  chats.forEach(message => appendMessage(message))
+})
 
 socket.on("message", (packet) => {
 	const chat = JSON.parse(packet);
@@ -136,19 +190,5 @@ socket.on("user-connected", (user) => {
 });
 
 socket.on("user-disconnected", (user) => {
-	alertAction(user, "left");
+	alertAction(JSON.parse(user).username, "left");
 });
-
-/* document.querySelector("#send-button").onclick = (e) => {
-	e.preventDefault();
-	const input = document.querySelector("#message-input");
-	const chat = {
-		content: input.value,
-		sentBy: username,
-		timeSent: Date.now().toString(),
-	};
-	socket.emit("message", JSON.stringify(chat));
-	input.value = "";
-}; */
-
-

@@ -1,9 +1,3 @@
-
-/* 
-const server = require('http').Server(app)
-const io = require('socket.io')(server, {
-    cors: { origin: "*" }
-}); */
 const express = require('express')
 const app = express()
 const http = require('http').Server(app);
@@ -13,41 +7,87 @@ const io = require("socket.io")(http, {
     }
   });
 const port = process.env.PORT || 8080
-const path = require('path')
+const cors = require("cors")
+   
+const {mock_users, mock_chats, mock_active_users} = require('./mock_data');
+const { Socket } = require('socket.io-client');
 
-app.set('view engine', 'ejs')
+app.use(cors())
 
-const users = {}
-const activeUsers = ["Jay", "Shash", "Foo", "Bar"]
+//==================API ENDPOINTS================//
 
-/* app.get('/api/chat', (req, res) => {
-    res.status(200).send("Hello")
-    res.send(chats)
-}) */
+app.get('/api/chats/', (req, res) => {
+    res.json(mock_chats)
+})
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '/../client', '/index.html'));
-});
+app.post('/api/users/', (req, res) => {//this will not exist for MVP because there are no passwords
+    console.log(req.body)
+    let user = getUserByName(req.body.username)
+    if (!user) {    //if a corresponsing user is found in the database
+        res.status(401).json('User exists!')
+    } else {
+        user = {
+            id: Date.now().toString(),
+            username: req.body.username
+        }
+        mock_users.push(user)
+        res.status(202).json('User added successfully')
+    }
+    res.status(user ? 201 : 404).json(user);    
+})
+
+app.get('/api/users/:username', (req, res) => {
+    console.log("query made for" ,req.params.username)
+    const user = getUserByName(req.params.username)
+    console.log(user ? user.username + "exists": `${req.params.username} does not exist`)
+    res.status(user ? 201 : 404).json(user);    
+})
+
+//TODO: Implement the following endpoints
+app.post('api/login/')
+app.post('api/users/:username/')  //to modify username/data
+app.post('api/register/')
+
+//=================IO CONTROLLER===================//
 
 io.on('connection', (socket) => {
     console.log('a user connected', socket.id);
+    socket.emit('load-messages', mock_chats);
 
-    socket.on('message', (chat) =>     {
+    socket.on('new-user', username => {
+        io.emit('user-connected', username);
+        user = getUserByName(username)
+        if (!user) {
+            user = {
+                user_id: Date.now(),
+                username: username
+            }
+            mock_users.push(user)
+        }
+
+        mock_active_users[socket.id] = user;
+        console.log("new user in chat: ", user)
+    })
+    
+    socket.on('message', (chat) => {
         console.log(JSON.parse(chat));
-        io.emit('message', chat);   
+        mock_chats.push(JSON.parse(chat));  //this will be updated to a database that stores the chat after each message event
+        io.emit('message', chat); 
     });
 
-    socket.on('new-user', user => {
-        io.emit('user-connected', user);
-        users[socket.id] = user
-        console.log("new user: ", user)
-    })
-
     socket.on('disconnect', () => {
-        io.emit('user-disconnected', users[socket.id])
-        delete users[socket.id]
+        io.emit('user-disconnected', JSON.stringify(mock_active_users[socket.id]))
+        delete mock_active_users[socket.id]
     })
 });
+
+//==================HELPER FUNCTIONS====================//
+
+function getUserByName(username) {
+    const user = mock_users.find(e => e.username === username);
+    if (user == -1) return false;
+    else return user;
+}
 
 http.listen(port, () => console.log('listening on http://localhost:' + port) );
 

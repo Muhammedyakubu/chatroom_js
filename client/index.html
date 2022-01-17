@@ -16,7 +16,6 @@
 
         body {
             font-family: 'Sora', sans-serif;
-            display: flex;
         }
 
         .content {
@@ -24,6 +23,8 @@
             margin: auto;
             border: 1px solid #dfdfdf;
             border-radius: 10px;
+            animation-name: modal-animation;
+            animation-duration: 1s;
         }
 
         #main-doc {
@@ -36,6 +37,10 @@
             display: flex;
             flex-direction: column;
             padding-left: 0;
+        }
+
+        h6 {
+            margin: 0;
         }
 
         .message {
@@ -100,6 +105,7 @@
 
         .alert {
             text-align: center;
+            margin: 7px;
         }
 
         @keyframes modal-animation {

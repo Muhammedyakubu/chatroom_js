@@ -8,11 +8,12 @@ Plan for chat app
         - if it does, then we can flash a green bar that says "Logged in as ${username}"
         - Otherwise we redirect to the login page and ask them to select a username
         - once user is authenticated then query for the chats and use a client-side function to load them in
+        - make sure for each chat sent, before relaying the info, we verify the user on the server side
     - alternatively, have socket connect and use that to check if user is logged in (by sending an "authenticated" event once user is logged in for "user joined" notifications).
     - if user logged in the display chat page. Otherwise diplay the login page.
     - play sounds on user connect and message send/receive
     - for the client-side socket set autoconnect to false and manually connect after verifying username
-- make a REST api using express and a mongoose database
+    - make a REST api using express and a mongoose database
     - To query for users: "GET myserver/users/:username" should return the user object (or username for the MVP) if it exists, or a null if it doesn't
         - maybe for my users use the schema:
         user = {
@@ -34,3 +35,19 @@ Plan for chat app
 - make a global chat first, push to internet and then work on more features lik
     - different rooms and private messaging
     - chat history
+
+
+- decision tree for login 
+    - if there is no/invalid username, create user
+        - that means wait for button click, then 
+            - check that username is valid
+                - alert if it isnt
+            - check if it exsits, and if not 
+                - createUser
+    - if there is username //valid at this point
+        - if it is in server then print Logged in (user)
+        - but it is not in server, 
+            - createUser
+            - print Welcome (user)!
+
+    THERE IS NO USER ALREADY EXISTS --> UNLESS MAYBE THE USER IS ALREADY IN THE LIST OF ACTIVE USERS
