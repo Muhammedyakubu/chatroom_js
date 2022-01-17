@@ -16,6 +16,7 @@
 
         body {
             font-family: 'Sora', sans-serif;
+            display: flex;
         }
 
         .content {
@@ -65,18 +66,60 @@
             border-top: 1px solid #dfdfdf;
         }
 
+        input, button {
+            font: inherit;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #login {
+            border: 1px solid #dfdfdf;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            width: fit-content;
+            animation-name: modal-animation;
+            animation-duration: 1s;
+            height: fit-content;
+            
+            position: absolute;
+            top:0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            
+            margin: auto;
+            z-index: 1;
+            box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px;
+        }
+
+        @keyframes modal-animation {
+            from {
+                top: -100px;
+                opacity: 0;
+            }
+            to {
+                top: 0px;
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
+
+    <form id="login" class="container hidden">
+        <label for="name-input">Name</label><br>
+        <input type="text" id="name-input" placeholder="your name here..."><br>
+        <button type="submit" id="set-name">set username</button>
+    </form>
+    
     <div class="content">
 
         <div class="messages-container">
+            <button id="sign-out">Sign Out</button>
         </div>
-
-        <!-- <form id="name-container">
-            <input type="text" id="name-input" placeholder="your name here...">
-            <button type="submit" id="set-name">set name</button>
-        </form> -->
 
         <form id="send-container">
             <input type="text" id="message-input" placeholder="new message...">
