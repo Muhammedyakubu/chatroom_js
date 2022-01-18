@@ -1,0 +1,162 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;700;800&display=swap');
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Sora', sans-serif;
+}
+
+.content {
+    width: 700px;
+    margin: auto;
+    border: 1px solid #dfdfdf;
+    border-radius: 10px;
+    animation-name: modal-animation;
+    animation-duration: 1s;
+}
+
+#main-doc {
+    margin: auto;
+}
+
+.messages-container {
+    height: 75vh;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    padding-left: 0;
+}
+
+h6 {
+    margin: 0;
+}
+
+.message {
+    border: 0px solid darkgrey;
+    border-radius: 0.5em;
+    margin: 0.6em;
+    max-width: 60%;
+    padding: 5px;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    display: inline;
+}
+
+.sent {
+    background-color: #4dabf7;
+    color: white;
+    float: right;
+}
+
+.received {
+    background-color: #eceff1;
+    color: black;
+    float: left;
+}
+
+#send-container,
+#name-container {
+    display: flex;
+    justify-content: center;
+    margin: 0 10px;
+    padding: 10px;
+    gap: 10px;
+    border-top: 1px solid #dfdfdf;
+}
+
+input, button {
+    font: inherit;
+}
+
+.hidden {
+    display: none;
+}
+
+#login {
+    border: 1px solid #dfdfdf;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    width: fit-content;
+    animation-name: modal-animation;
+    animation-duration: 1s;
+    height: fit-content;
+    
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    
+    margin: auto;
+    z-index: 1;
+    box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px;
+}
+
+.alert {
+    text-align: center;
+    margin: 7px;
+}
+
+@keyframes modal-animation {
+    from {
+        top: -100px;
+        opacity: 0;
+    }
+    to {
+        top: 0px;
+        opacity: 1;
+    }
+}
+
+input {
+    border-radius: 0.2em;
+    margin: 10px;
+    border: 0;
+    padding: 0.4em;
+    text-align: center;
+    border-bottom: #428BCA solid 2px;
+}
+input:focus, input:hover {
+    border-bottom: #6a1b9a solid 2px;
+    outline: 0;
+    transition: all 1s ease-out;
+}
+
+button {
+    background: #428BCA;
+    color: #fff;
+    font-family: inherit;
+    font-size: 17px;
+    margin: 10px;
+    padding: 10px;
+    text-align: center;
+    border: 0;
+    transition: all 0.5s ease-out;
+    border-radius: 0.25em;
+}
+
+button:hover {
+    background: #6a1b9a
+}
+
+span {
+    color: #428BCA;
+}
+
+.header {
+    text-align: center;
+}
+
+nav {
+    display: flex;
+    margin: 0 10px;
+    justify-content: space-between;
+    border-bottom: 1px solid #dfdfdf;
+}
+
+#flash-box {
+    text-align: center;
+    animation: modal-animation 3s ease-out;
+}

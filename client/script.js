@@ -7,15 +7,21 @@ const main = document.querySelector("#main-doc");
 
 const pages = {
 	login: `
-	<form id="login" class="container">
-        <label for="name-input">Name</label><br>
-        <input type="text" id="name-input" placeholder="your name here..."><br>
-        <button id="set-name">set username</button>
-    </form>
+	<h1 class="header">Welcome to Chat<span>Room!</span></h1>
+        <div id="flash-box"></div>
+        <form id="login" class="container">
+            <label for="name-input">Name</label><br>
+            <input type="text" id="name-input" placeholder="your name here..."><br>
+            <button id="set-name">set username</button>
+	</form>
 	`,
 	chat: `
 	<div class="content">
-            <button id="sign-out">Sign Out</button>
+            <nav>
+                <h1 class="header">Chat<span>Room</span></h1>
+                <button id="sign-out">Sign Out</button>
+            </nav>
+            
             <div class="messages-container">
                 
             </div>
