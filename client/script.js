@@ -5,7 +5,7 @@ const socket = io(SERVER, {
 
 const main = document.querySelector("#main-doc");
 
-pages = {
+const pages = {
 	login: `
 	<form id="login" class="container">
         <label for="name-input">Name</label><br>
@@ -25,6 +25,9 @@ pages = {
                 <button id="send-button">send</button>
             </form>
 	</div>`,
+	err503: `
+  <p class="error">I'm sorry, something went wrong :( </p><br/>
+  <button onclick="loadPage('login')">Login</button>`,
 };
 
 //===========EVENT LISTENERS=============//
@@ -35,6 +38,7 @@ window.onload = () => {
 	username = localStorage.getItem("username");
 	authenticateUser(username);
 };
+
 document.addEventListener("click", (e) => {
 	let input;
 	e.preventDefault();
@@ -47,7 +51,9 @@ document.addEventListener("click", (e) => {
 
 		case "sign-out":
 			localStorage.setItem("username", null);
-			location.reload();
+			username = "";
+			socket.disconnect();
+			loadPage("login");
 			break;
 
 		case "send-button":
@@ -64,7 +70,9 @@ document.addEventListener("click", (e) => {
 });
 
 //=================HELPER FUNCTIONS=================//
-
+/**
+ * @param {string} username
+ */
 function authenticateUser(username) {
 	if (!username || username == "null" || username == "undefined") {
 		loadPage("login");
@@ -73,10 +81,10 @@ function authenticateUser(username) {
 			.then((res) => {
 				if (res.ok) {
 					console.log("fetch Successful");
-          loadPage("chat")
+					loadPage("chat");
 				} else {
 					console.log("fetch not successful");
-          loadPage("login")
+					loadPage("login");
 				}
 				console.log("res:", res);
 				return res.json();
@@ -84,16 +92,24 @@ function authenticateUser(username) {
 			.then((data) => {
 				console.log("data:", data);
 				data ? socket.connect() : loadPage("login");
+			})
+			.catch((err) => {
+				console.log(err);
+				loadPage("err503");
 			});
 	}
 }
 
+/**
+ * @param {string} username
+ */
 function createUser(username) {
 	console.log("This is going to create a new user with name:", username);
 	//=>for now I'll use the sockets to create the user
 
 	//check that the username is valid
 	if (!username || username == "null" || username == "undefined") {
+		console.log("Invalid/Empty Username");
 		loadPage("login");
 	} else {
 		//open the socket -> which also creates a new user
@@ -103,7 +119,7 @@ function createUser(username) {
 
 	//=>later I'll change to using a post method
 
-	//create a new user with a post request. then if there is connect
+	//create a new user with a post request. If there is, connect
 	//then resirect to chats page
 }
 
@@ -127,20 +143,9 @@ function verifyUser(username) {
 	}
 }
 
-function loadPage(page) {
-	switch (page) {
-		case "login":
-			console.log(`loaded ${page} page`);
-			main.innerHTML = pages.login;
-			break;
-
-		case "chat":
-			console.log(`loaded ${page} page`);
-			main.innerHTML = pages.chat;
-			break;
-
-		default:
-			main.innerHTML = pages.login;
+function loadPage(pageName) {
+	for (const page in pages) {
+		if (pageName === page) main.innerHTML = pages[pageName];
 	}
 }
 
@@ -177,8 +182,8 @@ socket.on("connect", () => {
 });
 
 socket.on("load-messages", (chats) => {
-  chats.forEach(message => appendMessage(message))
-})
+	chats.forEach((message) => appendMessage(message));
+});
 
 socket.on("message", (packet) => {
 	const chat = JSON.parse(packet);
