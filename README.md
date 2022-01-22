@@ -4,6 +4,8 @@ On the front-end I utilized vanilla JavaScript, HTML, and CSS to create a Single
 
 The Front-end is live at 👉🏽:https://muhammedyakubu.github.io/chatroom_js/ 
 
+The Back-end is _still in deployment_
+
 ## How to Run
 1. Clone the repository locally using __git clone__
 2. Navigate to the parent directory (__"chatroom_js"__) in a terminal and type __"npm install"__

@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const http = require("http").Server(app);
+const http = require("http").createServer(app);
 const io = require("socket.io")(http, {
 	cors: {
 		origin: "*",
@@ -10,11 +10,16 @@ const port = process.env.PORT || 8080;
 const cors = require("cors");
 
 const { mock_users, mock_chats, mock_active_users } = require("./mock_data");
-const { Socket } = require("socket.io-client");
 
 app.use(cors());
 
-//==================API ENDPOINTS================//
+//============TEST ROUTES?===============//
+
+app.get("/", (req, res) => {
+	res.send("Hello world")
+})
+
+//==================API ENDPOINTS================// 	
 
 app.get("/api/chats/", (req, res) => {
 	res.json(mock_chats);
@@ -98,8 +103,7 @@ function getUserByName(username) {
 	else return user;
 }
 
-//http.listen(port, () => console.log("listening on http://localhost:" + port));
-http.listen();
+http.listen(port, () => console.log("listening on http://localhost:" + port));
 
 // storing chats in DB - to be implemented
 /* const mongoose = require('mongoose')

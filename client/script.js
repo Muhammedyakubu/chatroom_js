@@ -1,5 +1,6 @@
 //const SERVER = "http://localhost:8080";
 const SERVER = "https://my-chatarena.herokuapp.com";
+
 const socket = io(SERVER, {
 	autoConnect: false,
 });
@@ -46,7 +47,7 @@ window.onload = () => {
 	authenticateUser(username);
 };
 
-document.addEventListener("click", (e) => {
+document.addEventListener("click", e => {
 	let input;
 	e.preventDefault();
 	switch (e.target.id) {
@@ -85,7 +86,7 @@ function authenticateUser(username) {
 		loadPage("login");
 	} else {
 		fetch(SERVER + "/api/users/" + username)
-			.then((res) => {
+			.then(res => {
 				if (res.ok) {
 					console.log("fetch Successful");
 					loadPage("chat");
@@ -96,11 +97,11 @@ function authenticateUser(username) {
 				console.log("res:", res);
 				return res.json();
 			})
-			.then((data) => {
+			.then(data => {
 				console.log("data:", data);
 				data ? socket.connect() : loadPage("login");
 			})
-			.catch((err) => {
+			.catch(err => {
 				console.log(err);
 				loadPage("err503");
 			});
@@ -188,19 +189,19 @@ socket.on("connect", () => {
 	socket.emit("new-user", username);
 });
 
-socket.on("load-messages", (chats) => {
-	chats.forEach((message) => appendMessage(message));
+socket.on("load-messages", chats => {
+	chats.forEach(message => appendMessage(message));
 });
 
-socket.on("message", (packet) => {
+socket.on("message", packet => {
 	const chat = JSON.parse(packet);
 	appendMessage(chat);
 });
 
-socket.on("user-connected", (user) => {
+socket.on("user-connected", user => {
 	alertAction(user, "joined");
 });
 
-socket.on("user-disconnected", (user) => {
+socket.on("user-disconnected", user => {
 	alertAction(JSON.parse(user).username, "left");
 });
