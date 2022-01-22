@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
 	res.send("Hello world")
 })
 
-//==================API ENDPOINTS================//
+//==================API ENDPOINTS================// 	
 
 app.get("/api/chats/", (req, res) => {
 	res.json(mock_chats);

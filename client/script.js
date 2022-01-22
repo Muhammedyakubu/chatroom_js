@@ -1,6 +1,8 @@
 //const SERVER = "http://localhost:8080";
 //const SERVER = "https://my-chatarena.herokuapp.com";
 const SERVER = "https://secret-falls-07457.herokuapp.com/";
+//const SERVER = "http://localhost:5000";
+
 const socket = io(SERVER, {
 	autoConnect: false,
 });
@@ -205,7 +207,3 @@ socket.on("user-connected", user => {
 socket.on("user-disconnected", user => {
 	alertAction(JSON.parse(user).username, "left");
 });
-
-const func = "loadPage";
-console.log(func("chat"));
-[func]("chat");
