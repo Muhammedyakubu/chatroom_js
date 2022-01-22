@@ -13,6 +13,12 @@ const { mock_users, mock_chats, mock_active_users } = require("./mock_data");
 
 app.use(cors());
 
+//============TEST ROUTES?===============//
+
+app.get("/", (req, res) => {
+	res.send("Hello world")
+})
+
 //==================API ENDPOINTS================//
 
 app.get("/api/chats/", (req, res) => {
