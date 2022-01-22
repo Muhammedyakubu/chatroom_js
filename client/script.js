@@ -1,5 +1,6 @@
-const SERVER = "http://localhost:8080";
+//const SERVER = "http://localhost:8080";
 //const SERVER = "https://my-chatarena.herokuapp.com";
+const SERVER = "https://secret-falls-07457.herokuapp.com/";
 const socket = io(SERVER, {
 	autoConnect: false,
 });
