@@ -73,11 +73,11 @@ input, button {
     display: none;
 }
 
-#login {
+.center-modal {
     border: 1px solid #dfdfdf;
     border-radius: 10px;
     padding: 10px;
-    text-align: center;
+    text-align: left;
     width: fit-content;
     animation-name: modal-animation;
     animation-duration: 1s;
@@ -92,6 +92,11 @@ input, button {
     margin: auto;
     z-index: 1;
     box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px;
+}
+
+#home {
+    display: flex;
+    flex-direction: column;
 }
 
 .alert {
@@ -110,12 +115,23 @@ input, button {
     }
 }
 
+a {
+    margin-left: 10px;
+    transition: all 1s ease-out;
+    color: grey;
+}
+
+label {
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
 input {
     border-radius: 0.2em;
     margin: 10px;
     border: 0;
     padding: 0.4em;
-    text-align: center;
+    text-align: left;
     border-bottom: #428BCA solid 2px;
 }
 input:focus, input:hover {
