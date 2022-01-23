@@ -4,20 +4,21 @@
   "description": "",
   "main": "./server/server.js",
   "scripts": {
-    "devStart": "nodemon server/server.js"
+    "dev": "nodemon server/server.js",
+    "start": "node server/server.js"
   },
   "keywords": [],
   "author": "Muhammed Yakubu <m.yakubu@mail.utoronto.ca>",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
-    "ejs": "^3.1.6",
     "express": "^4.17.2",
-    "socket.io": "^4.4.1",
-    "socket.io-client": "^4.4.1",
-    "ws": "^8.4.0"
+    "socket.io": "^4.4.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
+  },
+  "engines": {
+    "node": "14.17.6"
   }
 }
