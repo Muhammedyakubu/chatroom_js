@@ -38,21 +38,21 @@ h6 {
     border-radius: 0.5em;
     margin: 0.6em;
     max-width: 60%;
+    min-width: 20%;
     padding: 5px;
     box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
-    display: inline;
 }
 
 .sent {
-    background-color: #4dabf7;
+    background-color: #428BCA;
     color: white;
-    float: right;
+    align-self: flex-end;
 }
 
 .received {
     background-color: #eceff1;
     color: black;
-    float: left;
+    align-self: flex-start;
 }
 
 #send-container,

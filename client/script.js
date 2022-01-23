@@ -150,6 +150,9 @@ function verifyUser(username) {
 	}
 }
 
+/**
+ * @param {string} pageName
+ */
 function loadPage(pageName) {
 	for (const page in pages) {
 		if (pageName === page) main.innerHTML = pages[pageName];
