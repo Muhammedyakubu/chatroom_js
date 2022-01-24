@@ -17,24 +17,24 @@ const mock_users = [{
 
 const mock_chats = [
     { content: 'Hey', sentBy: 'Foo', timeSent: 1642455471914 },
-    { content: 'Yo wassupppp', sentBy: 'Jake', timeSent: 1642455521517 },
-    { content: 'nm bro hbu', sentBy: 'Foo', timeSent: 1642455527843 },
+    { content: 'Yo What\'s up?', sentBy: 'Jake', timeSent: 1642455521517 },
+    { content: 'Nothing much. Hbu?', sentBy: 'Foo', timeSent: 1642455527843 },
     {
-      content: "I'm good i'm good. Just chilling",
+      content: "I'm good. Just working on the problem set",
       sentBy: 'Jake',
       timeSent: 1642455540507
     },
     {
-      content: 'Dude did you do the reading yet? 😭',
+      content: 'Dude did you do the 297 reading yet? 😭',
       sentBy: 'Foo',
       timeSent: 1642455558186
     },
-    { content: '👀 ', sentBy: 'Jake', timeSent: 1642455567315 },
+    { content: '👀 ', sentBy: 'Jay', timeSent: 1642455567315 },
     { content: 'what reading?', sentBy: 'Jake', timeSent: 1642455573315 },
     { content: '🤣', sentBy: 'Foo', timeSent: 1642455581002 },
-    { content: 'okay good', sentBy: 'Foo', timeSent: 1642455583954 },
+    { content: 'okay good to know I\'m not alone in this LOL.', sentBy: 'Foo', timeSent: 1642455583954 },
     {
-      content: 'Aii Imma head off bro see yuh!',
+      content: 'Anyways I gotta go now. Bye!',
       sentBy: 'Foo',
       timeSent: 1642455594762
     }
