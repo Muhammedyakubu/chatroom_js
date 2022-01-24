@@ -5,57 +5,7 @@ const socket = io(SERVER, {
 	autoConnect: false,
 });
 
-const main_doc = document.querySelector("#main-doc");
-
-const pages = {
-	login: `
-	<h1 class="header">Welcome to Chat<span>Room!</span></h1>
-	<div id="flash-box"></div>
-	<form id="login" class="container center-modal">
-		<label for="name-input">Name</label><br>
-		<input type="text" id="name-input" placeholder="your name here..."><br>
-		<button id="login-button">Login</button><br/>
-		<a href="#" onclick="loadPage('register')">Register</a>
-	</form>
-	`,
-	register: `
-	<h1 class="header">Welcome to Chat<span>Room!</span></h1>
-	<div id="flash-box"></div>
-	<form id="register" class="container center-modal">
-		<label for="name-input">Name</label><br>
-		<input type="text" id="name-input" placeholder="your name here..."><br>
-		<button id="register-button">Register</button><br/>
-        <a href="#" onclick="loadPage('login')">Login</a>
-	</form>
-	`,
-	home: `
-	<h1 class="header">Welcome to Chat<span>Room!</span></h1>
-	<div id="flash-box"></div>
-	<form id="home" class="container center-modal">
-		<button onclick="loadPage('login')">Login</button>
-		<button onclick="loadPage('register')">Register</button>
-	</form>	
-	`,
-	chat: `
-	<div class="content">
-		<nav>
-			<h1 class="header">Chat<span>Room</span></h1>
-			<button id="sign-out">Sign Out</button>
-		</nav>
-		
-		<div class="messages-container">
-			
-		</div>
-
-		<form id="send-container">
-			<input type="text" id="message-input" placeholder="new message...">
-			<button id="send-button">send</button>
-		</form>
-	</div>`,
-	err503: `
-  <p class="error">I'm sorry, something went wrong :( </p><br/>
-  <button onclick="loadPage('login')">Login</button>`,
-};
+const mainDoc = document.querySelector("#main-doc");
 
 //===========MAIN==============//
 
@@ -73,8 +23,10 @@ async function main(){
 	}
 }
 
-window.onload = main
-
+window.onload = () => {
+	//hide the loader
+	main()
+}
 //===========EVENT LISTENERS=============//
 
 document.addEventListener("click", e => {
@@ -90,7 +42,7 @@ document.addEventListener("click", e => {
 		case "login-button": //login button
 			input = document.querySelector("#name-input");
 			username = input.value;
-			signUserIn(username);
+			logUserIn(username);
 			break;
 
 		case "sign-out":
@@ -127,13 +79,17 @@ async function authenticateUser(username) {
 	}
 }
 
-async function signUserIn(username){
-	const legit = await authenticateUser(username)
-	console.log(legit);
-	if (legit) {
+async function logUserIn(username){
+	if (username.length === 0){
+		flash("Username cannot be empty");
+		return;
+	}
+	const userExists = await authenticateUser(username)
+	console.log(userExists);
+	if (userExists) {
 		loadPage('chat')
 		socket.connect()
-		alertAction(null, "Logged in as " + username)
+		flash(`Logged in as ${userExists.username}`)
 	} else {
 		loadPage('login')
 		flash(`User ${username} does not exist`)
@@ -141,35 +97,46 @@ async function signUserIn(username){
 }
 
 function flash(message){
-	const el = document.createElement("div")
+	const flashBox = document.querySelector("#flash-box");
+	flashBox.innerHTML = message;
+	/* const el = document.createElement('div')
+	el.className = "flash-message"
 	el.innerHTML = message
-	document.querySelector("#flash-box").appendChild(el)
-	setTimeout(() => el.remove(), 4000)
+	flashBox.appendChild(el)
+	console.log(flashBox); */
+	setTimeout(() => flashBox.innerHTML = "", 3000)
 }
 
 async function fetchUser(username){
 	const res = await fetch(SERVER + "/api/users/" + username)
-	if (res.ok) {
-		console.log("fetch Successful, returning user");
-		const user = await res.json()
-		return user
-	} else if (res.status == 400) {
-		console.log(await res.json());
-		return false
+	try {
+		if (res.ok) {
+			console.log("fetch Successful, returning user");
+			const user = await res.json()
+			return user
+		} else if (res.status == 400) {
+			console.log(await res.json());
+			return false
+		} else {
+			return await res.json()
+		}		
+	} catch (error) {
+		console.log(error);
 	}
-	res.catch(err => {
-		console.log(err)
-	});
 }
 
 /**
  * @param {string} username
  */
 function createUser(username) {
-	console.log("This is going to create a new user with name:", username);
+	console.log("creating a new user with name:", username);
 	//=>for now I'll use the sockets to create the user
 
 	//check that the username is valid
+	if (username.length === 0){
+		flash("Username cannot be empty");
+		return;
+	}
 	if (!username || username == "null" || username == "undefined") {
 		console.log("Invalid/Empty Username");
 		loadPage("register");
@@ -193,7 +160,7 @@ function createUser(username) {
  */
 function loadPage(pageName) {
 	for (const page in pages) {
-		if (pageName === page) main_doc.innerHTML = pages[pageName];
+		if (pageName === page) mainDoc.innerHTML = pages[pageName];
 	}
 }
 
