@@ -1,195 +1,228 @@
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@300;700;800&display=swap");
 
 /* TO-DO: split styles into separate files */
 
+:root {
+    --border-color: rgba(223, 226, 230, 0.3);
+}
+
 html {
-    scroll-behavior: smooth;
+	scroll-behavior: smooth;
 }
 
 body {
-    font-family: 'Sora', sans-serif;
+	font-family: "Sora", sans-serif;
+	background: #8360c3; /* fallback for old browsers */
+	background: -webkit-linear-gradient(
+		to left,
+		#2ebf91,
+		#8360c3
+	); /* Chrome 10-25, Safari 5.1-6 */
+	background: linear-gradient(
+		to left,
+		#2ebf91,
+		#8360c3
+	); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 .content {
-    width: 700px;
-    margin: auto;
-    border: 1px solid #dfdfdf;
-    border-radius: 10px;
-    animation-name: modal-animation;
-    animation-duration: 1s;
+	width: 700px;
+	margin: auto;
+	border: 1px solid var(--border-color);
+	border-radius: 10px;
+	animation-name: modal-animation;
+	animation-duration: 1s;
+	background-color: rgba(255, 255, 255, 0.5);
+	backdrop-filter: blur(16px) saturate(180%);
 }
 
 #main-doc {
-    margin: auto;
+	margin: auto;
 }
 
 .messages-container {
-    height: 75vh;
-    overflow: auto;
-    display: flex;
-    flex-direction: column;
-    padding-left: 0;
+	height: 75vh;
+	overflow: auto;
+	display: flex;
+	flex-direction: column;
+	padding-left: 0;
+}
+
+.messages-container::-webkit-scrollbar {
+	display: none;
 }
 
 h6 {
-    margin: 0;
+	margin: 0;
 }
 
 .message {
-    border: 0px solid darkgrey;
-    border-radius: 0.5em;
-    margin: 0.6em;
-    max-width: 60%;
-    min-width: 20%;
-    padding: 5px;
-    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+	border: 1px solid var(--border-color);
+	border-radius: 0.5em;
+	margin: 0.6em;
+	max-width: 60%;
+	min-width: 20%;
+	padding: 5px;
+	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 }
 
 .sent {
-    background-color: #428BCA;
-    color: white;
-    align-self: flex-end;
+	background-color: #428bca;
+	color: white;
+	align-self: flex-end;
 }
 
 .received {
-    background-color: #eceff1;
-    color: black;
-    align-self: flex-start;
+	background-color: #eceff1;
+	color: black;
+	align-self: flex-start;
 }
 
-#send-container,
-#name-container {
-    display: flex;
-    justify-content: center;
-    margin: 0 10px;
-    padding: 10px;
-    gap: 10px;
-    border-top: 1px solid #dfdfdf;
+#send-container {
+	display: flex;
+	justify-content: space-between;
+	margin: 0 10px;
+	padding: 10px;
+	gap: 10px;
+	border-top: 1px solid var(--border-color);
 }
 
-input, button {
-    font: inherit;
+#message-input {
+	display: flex;
+	flex-basis: 100%;
+}
+
+input,
+button {
+	font: inherit;
 }
 
 .hidden {
-    display: none;
+	display: none;
 }
 
 .center-modal {
-    border: 1px solid #dfdfdf;
-    border-radius: 10px;
-    padding: 10px;
-    text-align: left;
-    width: fit-content;
-    animation-name: modal-animation;
-    animation-duration: 1s;
-    height: fit-content;
-    
-    position: absolute;
-    top:0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    
-    margin: auto;
-    z-index: 1;
-    box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px;
+	border: 1px solid var(--border-color);
+	border-radius: 10px;
+	padding: 10px;
+	text-align: left;
+	width: fit-content;
+	animation-name: modal-animation;
+	animation-duration: 1s;
+	height: fit-content;
+	background-color: rgba(255, 255, 255, 0.5);
+	backdrop-filter: blur(16px) saturate(180%);
+
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+
+	margin: auto;
+	z-index: 1;
+	box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px,
+		rgba(17, 17, 26, 0.1) 0px 0px 8px;
 }
 
 #home {
-    display: flex;
-    flex-direction: column;
+	display: flex;
+	flex-direction: column;
 }
 
 .alert {
-    text-align: center;
-    margin: 7px;
+	text-align: center;
+	margin: 7px;
 }
 
 @keyframes modal-animation {
-    from {
-        top: -100px;
-        opacity: 0;
-    }
-    to {
-        top: 0px;
-        opacity: 1;
-    }
+	from {
+		top: -100px;
+		opacity: 0;
+	}
+	to {
+		top: 0px;
+		opacity: 1;
+	}
 }
 
 @keyframes flash-animation {
-    from {
-        top: -100px;
-        opacity: 0;
-    }
-    50% {
-        top: 0px;
-        opacity: 1;
-    }
-    to {
-        top: -100px;
-        opacity: 0;
-    }
+	from {
+		top: -100px;
+		opacity: 0;
+	}
+	50% {
+		top: 0px;
+		opacity: 1;
+	}
+	to {
+		top: -100px;
+		opacity: 0;
+	}
 }
 
 a {
-    margin-left: 10px;
-    transition: all 1s ease-out;
-    color: grey;
+	margin-left: 10px;
+	transition: all 1s ease-out;
+	color: #777474;
 }
 
 label {
-    margin-left: 10px;
-    margin-top: 10px;
+	margin-left: 10px;
+	margin-top: 10px;
 }
 
 input {
-    border-radius: 0.2em;
-    margin: 10px;
-    border: 0;
-    padding: 0.4em;
-    text-align: left;
-    border-bottom: #428BCA solid 2px;
+	border-radius: 0.2em;
+	margin: 10px;
+	border: 0;
+	padding: 0.4em;
+	text-align: left;
+	border-bottom: #428bca solid 2px;
+	background-color: rgb(255, 255, 255, 0);
 }
-input:focus, input:hover {
-    border-bottom: #6a1b9a solid 2px;
-    outline: 0;
-    transition: all 1s ease-out;
+input:focus,
+input:hover {
+	border-bottom: #6a1b9a solid 2px;
+	outline: 0;
+	transition: all 1s ease-out;
+	background-color: rgb(255, 255, 255, 0.3);
 }
 
 button {
-    background: #428BCA;
-    color: #fff;
-    font-family: inherit;
-    font-size: 17px;
-    margin: 10px;
-    padding: 10px;
-    text-align: center;
-    border: 0;
-    transition: all 0.5s ease-out;
-    border-radius: 0.25em;
+	background: #428bca;
+	color: #fff;
+	font-family: inherit;
+	font-size: 17px;
+	margin: 10px;
+	padding: 10px;
+	text-align: center;
+	border: 0;
+	transition: all 0.5s ease-out;
+	border-radius: 0.25em;
 }
 
 button:hover {
-    background: #6a1b9a
+	background: #6a1b9a;
 }
 
 span {
-    color: #428BCA;
+	color: #428bca;
 }
 
 .header {
-    text-align: center;
+	text-align: center;
 }
 
 nav {
-    display: flex;
-    margin: 0 10px;
-    justify-content: space-between;
-    border-bottom: 1px solid #dfdfdf;
+	display: flex;
+	margin: 0 10px;
+	justify-content: space-between;
+	border-bottom: 1px solid var(--border-color);
 }
 
 #flash-box {
-    text-align: center;
-    animation: modal-animation 3s ease-out;
+	text-align: center;
+	animation: modal-animation 3s ease-out;
+    z-index: 4;
 }

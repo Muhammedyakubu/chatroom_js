@@ -145,7 +145,7 @@ function createUser(username) {
 		//open the socket -> which also creates a new user
 		loadPage("chat");
 		socket.connect();
-		flash("Welcome " + username);
+		flash(`Welcome ${username}!` );
 	}
 
 	//=>later I'll change to using a post method
