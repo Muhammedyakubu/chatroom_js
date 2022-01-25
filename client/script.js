@@ -50,6 +50,7 @@ document.addEventListener("click", e => {
 			localStorage.setItem("username", username);
 			socket.disconnect();
 			loadPage("home");
+			flash("Successfully signed out", "success")
 			break;
 
 		case "send-button":
@@ -89,22 +90,25 @@ async function logUserIn(username){
 	if (userExists) {
 		loadPage('chat')
 		socket.connect()
-		flash(`Logged in as ${userExists.username}`)
+		flash(`Logged in as ${userExists.username}`, "success")
 	} else {
 		loadPage('login')
 		flash(`User ${username} does not exist`)
 	}
 }
 
-function flash(message){
-	const flashBox = document.querySelector("#flash-box");
+
+//==> refactored function. Should clean 
+function flash(message,verb){
+	/* const flashBox = document.querySelector("#flash-box");
 	flashBox.innerHTML = message;
-	/* const el = document.createElement('div')
+	const el = document.createElement('div')
 	el.className = "flash-message"
 	el.innerHTML = message
 	flashBox.appendChild(el)
-	console.log(flashBox); */
-	setTimeout(() => flashBox.innerHTML = "", 3000)
+	console.log(flashBox); 
+	setTimeout(() => flashBox.innerHTML = "", 3000) */
+	new window.FlashMessage(message, verb);
 }
 
 async function fetchUser(username){
@@ -140,12 +144,12 @@ function createUser(username) {
 	if (!username || username == "null" || username == "undefined") {
 		console.log("Invalid/Empty Username");
 		loadPage("register");
-		flash("Invalid Username")
+		flash(`Username cannot be "null", "undefined", or empty`)
 	} else {
 		//open the socket -> which also creates a new user
 		loadPage("chat");
 		socket.connect();
-		flash(`Welcome ${username}!` );
+		flash(`Welcome ${username}!`, "success");
 	}
 
 	//=>later I'll change to using a post method

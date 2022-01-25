@@ -49,7 +49,7 @@ body {
 }
 
 .messages-container::-webkit-scrollbar {
-	display: none;
+    opacity: 0.5;
 }
 
 h6 {
@@ -219,10 +219,4 @@ nav {
 	margin: 0 10px;
 	justify-content: space-between;
 	border-bottom: 1px solid var(--border-color);
-}
-
-#flash-box {
-	text-align: center;
-	animation: modal-animation 3s ease-out;
-    z-index: 4;
 }
