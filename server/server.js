@@ -11,7 +11,10 @@ const cors = require("cors");
 
 const { mock_users, mock_chats, mock_active_users } = require("./mock_data");
 
+//==============MIDDLEWARE===============//
 app.use(cors());
+app.use(express.json());
+//app.use(express.urlencoded({ extended: true}))
 
 //============TEST ROUTES?===============//
 
