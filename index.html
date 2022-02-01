@@ -6,13 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ChatRoom</title>
     <script src="https://cdn.socket.io/4.4.1/socket.io.js"></script>
+    <script src="client/pages.js" defer></script>
+    <script src="lib/flashjs-master/dist/flash.min.js"></script>
     <script src="client/script.js" defer></script>
-    <link rel="stylesheet" href="client/styles.css">
+    <link rel="stylesheet" href="client/css/loader.css">
+    <link rel="stylesheet" href="client/css/styles.css">
+    <link rel="stylesheet" href="lib/flashjs-master/dist/flash.css">
 </head>
 <body>
+    <div class="loader-wrapper hidden">
+        <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+    </div>
     
     <section id="main-doc">
-        
     </section>
 </body>
 </html>

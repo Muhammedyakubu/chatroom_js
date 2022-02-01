@@ -5,63 +5,52 @@ const socket = io(SERVER, {
 	autoConnect: false,
 });
 
-const main = document.querySelector("#main-doc");
+const mainDoc = document.querySelector("#main-doc");
 
-const pages = {
-	login: `
-	<h1 class="header">Welcome to Chat<span>Room!</span></h1>
-        <div id="flash-box"></div>
-        <form id="login" class="container">
-            <label for="name-input">Name</label><br>
-            <input type="text" id="name-input" placeholder="your name here..."><br>
-            <button id="set-name">set username</button>
-	</form>
-	`,
-	chat: `
-	<div class="content">
-            <nav>
-                <h1 class="header">Chat<span>Room</span></h1>
-                <button id="sign-out">Sign Out</button>
-            </nav>
-            
-            <div class="messages-container">
-                
-            </div>
-    
-            <form id="send-container">
-                <input type="text" id="message-input" placeholder="new message...">
-                <button id="send-button">send</button>
-            </form>
-	</div>`,
-	err503: `
-  <p class="error">I'm sorry, something went wrong :( </p><br/>
-  <button onclick="loadPage('login')">Login</button>`,
-};
-
-//===========EVENT LISTENERS=============//
+//===========MAIN==============//
 
 let username;
 
-window.onload = () => {
+async function main() {
 	username = localStorage.getItem("username");
-	authenticateUser(username);
+	const auth = await authenticateUser(username);
+	if (auth) {
+		console.log(auth);
+		loadPage("chat");
+		socket.connect();
+	} else {
+		loadPage("home");
+	}
+}
+
+window.onload = () => {
+	//hide the loader
+	main();
 };
+//===========EVENT LISTENERS=============//
 
 document.addEventListener("click", e => {
 	let input;
 	e.preventDefault();
 	switch (e.target.id) {
-		case "set-name": //login button
+		case "register-button": //login button
 			input = document.querySelector("#name-input");
 			username = input.value;
 			createUser(username);
 			break;
 
+		case "login-button": //login button
+			input = document.querySelector("#name-input");
+			username = input.value;
+			logUserIn(username);
+			break;
+
 		case "sign-out":
-			localStorage.setItem("username", null);
-			username = "";
+			username = null;
+			localStorage.setItem("username", username);
 			socket.disconnect();
-			loadPage("login");
+			loadPage("home");
+			flash("Successfully signed out", "success");
 			break;
 
 		case "send-button":
@@ -85,30 +74,67 @@ document.addEventListener("click", e => {
 /**
  * @param {string} username
  */
-function authenticateUser(username) {
+async function authenticateUser(username) {
 	if (!username || username == "null" || username == "undefined") {
-		loadPage("login");
+		console.log("returning false");
+		return false;
 	} else {
-		fetch(SERVER + "/api/users/" + username)
-			.then(res => {
-				if (res.ok) {
-					console.log("fetch Successful");
-					loadPage("chat");
-				} else {
-					console.log("fetch not successful");
-					loadPage("login");
-				}
-				console.log("res:", res);
-				return res.json();
-			})
-			.then(data => {
-				console.log("data:", data);
-				data ? socket.connect() : loadPage("login");
-			})
-			.catch(err => {
-				console.log(err);
-				loadPage("err503");
-			});
+		toggleLoader();
+		const user = await fetchUser(username);
+		toggleLoader();
+		return user;
+	}
+}
+
+async function logUserIn(username) {
+	if (username.length === 0) {
+		flash("Username cannot be empty");
+		return;
+	}
+	const userExists = await authenticateUser(username);
+	console.log(userExists);
+	if (userExists) {
+		loadPage("chat");
+		socket.connect();
+		flash(`Logged in as ${userExists.username}`, "success");
+	} else {
+		loadPage("login");
+		flash(`User ${username} does not exist`);
+	}
+}
+
+function toggleLoader() {
+	document.querySelector(".loader-wrapper").classList.toggle("hidden");
+}
+
+//==> refactored function. Should clean
+function flash(message, verb) {
+	/* const flashBox = document.querySelector("#flash-box");
+	flashBox.innerHTML = message;
+	const el = document.createElement('div')
+	el.className = "flash-message"
+	el.innerHTML = message
+	flashBox.appendChild(el)
+	console.log(flashBox); 
+	setTimeout(() => flashBox.innerHTML = "", 3000) */
+	new window.FlashMessage(message, verb);
+}
+
+async function fetchUser(username) {
+	const res = await fetch(SERVER + "/api/users/" + username);
+	try {
+		if (res.ok) {
+			console.log("fetch Successful, returning user");
+			const user = await res.json();
+			return user;
+		} else if (res.status == 400) {
+			console.log(await res.json());
+			return false;
+		} else {
+			return await res.json();
+		}
+	} catch (error) {
+		console.log(error);
 	}
 }
 
@@ -116,17 +142,23 @@ function authenticateUser(username) {
  * @param {string} username
  */
 function createUser(username) {
-	console.log("This is going to create a new user with name:", username);
+	console.log("creating a new user with name:", username);
 	//=>for now I'll use the sockets to create the user
 
 	//check that the username is valid
+	if (username.length === 0) {
+		flash("Username cannot be empty");
+		return;
+	}
 	if (!username || username == "null" || username == "undefined") {
 		console.log("Invalid/Empty Username");
-		loadPage("login");
+		loadPage("register");
+		flash(`Username cannot be "null", "undefined", or empty`);
 	} else {
 		//open the socket -> which also creates a new user
 		loadPage("chat");
 		socket.connect();
+		flash(`Welcome ${username}!`, "success");
 	}
 
 	//=>later I'll change to using a post method
@@ -135,32 +167,12 @@ function createUser(username) {
 	//then resirect to chats page
 }
 
-//=> This us an unused function
-function verifyUser(username) {
-	if (!username || username == "null" || username == "undefined") {
-		//load login page
-		loadPage("login");
-
-		//could move all this logic to the backend
-		let message;
-		if (users.includes(username)) {
-			//change this to an api call that checks for the user
-			message = "Username exsists!! Please choose something else";
-		} else if (username == "null") {
-			message = "Invalid username!! Please choose something else";
-		} else {
-			message = "Hey there! Please select your username";
-		}
-		localStorage.setItem("username", username);
-	}
-}
-
 /**
  * @param {string} pageName
  */
 function loadPage(pageName) {
 	for (const page in pages) {
-		if (pageName === page) main.innerHTML = pages[pageName];
+		if (pageName === page) mainDoc.innerHTML = pages[pageName];
 	}
 }
 
@@ -197,7 +209,9 @@ socket.on("connect", () => {
 });
 
 socket.on("load-messages", chats => {
+	toggleLoader();
 	chats.forEach(message => appendMessage(message));
+	toggleLoader();
 });
 
 socket.on("message", packet => {

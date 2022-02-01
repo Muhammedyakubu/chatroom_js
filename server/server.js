@@ -11,15 +11,18 @@ const cors = require("cors");
 
 const { mock_users, mock_chats, mock_active_users } = require("./mock_data");
 
+//==============MIDDLEWARE===============//
 app.use(cors());
+app.use(express.json());
+//app.use(express.urlencoded({ extended: true}))
 
 //============TEST ROUTES?===============//
 
 app.get("/", (req, res) => {
-	res.send("Hello world")
-})
+	res.send("Hello world");
+});
 
-//==================API ENDPOINTS================// 	
+//==================API ENDPOINTS================//
 
 app.get("/api/chats/", (req, res) => {
 	res.json(mock_chats);
@@ -60,11 +63,11 @@ app.post("api/register/");
 
 //=================IO CONTROLLER===================//
 
-io.on("connection", (socket) => {
+io.on("connection", socket => {
 	console.log("a user connected", socket.id);
 	socket.emit("load-messages", mock_chats);
 
-	socket.on("new-user", (username) => {
+	socket.on("new-user", username => {
 		io.emit("user-connected", username);
 
 		user = getUserByName(username);
@@ -80,7 +83,7 @@ io.on("connection", (socket) => {
 		console.log("new user in chat: ", user);
 	});
 
-	socket.on("message", (chat) => {
+	socket.on("message", chat => {
 		console.log(JSON.parse(chat));
 		mock_chats.push(JSON.parse(chat)); //this will be updated to a database that stores the chat after each message event
 		io.emit("message", chat);
@@ -98,7 +101,7 @@ io.on("connection", (socket) => {
 //==================HELPER FUNCTIONS====================//
 
 function getUserByName(username) {
-	const user = mock_users.find((e) => e.username === username);
+	const user = mock_users.find(e => e.username === username);
 	if (user == -1) return false;
 	else return user;
 }
