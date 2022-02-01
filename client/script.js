@@ -55,6 +55,10 @@ document.addEventListener("click", e => {
 
 		case "send-button":
 			input = document.querySelector("#message-input");
+			if (input.value.length === 0) {
+				alert("Message cannot be empty");
+				return;
+			};
 			const chat = {
 				content: input.value,
 				sentBy: username,
