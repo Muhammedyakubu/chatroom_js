@@ -75,7 +75,9 @@ async function authenticateUser(username) {
 		console.log("returning false");
 		return false;
 	} else {
+		toggleLoader()
 		const user = await fetchUser(username)
+		toggleLoader()
 		return user
 	}
 }
@@ -97,6 +99,10 @@ async function logUserIn(username){
 	}
 }
 
+
+function toggleLoader() {
+	document.querySelector(".loader-wrapper").classList.toggle("hidden")
+}
 
 //==> refactored function. Should clean 
 function flash(message,verb){
@@ -201,7 +207,9 @@ socket.on("connect", () => {
 });
 
 socket.on("load-messages", chats => {
+	toggleLoader()
 	chats.forEach(message => appendMessage(message));
+	toggleLoader()
 });
 
 socket.on("message", packet => {
