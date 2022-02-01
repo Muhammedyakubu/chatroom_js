@@ -3,7 +3,7 @@
 /* TO-DO: split styles into separate files */
 
 :root {
-    --border-color: rgba(223, 226, 230, 0.3);
+	--border-color: rgba(223, 226, 230, 0.3);
 }
 
 html {
@@ -49,15 +49,15 @@ body {
 }
 
 .messages-container::-webkit-scrollbar {
-    background: transparent;
-    height: 8px;
-    width: 8px;
+	background: transparent;
+	height: 8px;
+	width: 8px;
 }
 
 .messages-container::-webkit-scrollbar-thumb {
 	background: rgba(255, 255, 255, 0.4);
-    border-radius: 4px;
-    min-height: 40px;
+	border-radius: 4px;
+	min-height: 40px;
 }
 
 h6 {

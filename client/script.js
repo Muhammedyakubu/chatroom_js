@@ -11,22 +11,22 @@ const mainDoc = document.querySelector("#main-doc");
 
 let username;
 
-async function main(){
+async function main() {
 	username = localStorage.getItem("username");
-	const auth = await authenticateUser(username)
+	const auth = await authenticateUser(username);
 	if (auth) {
-		console.log(auth)
-		loadPage('chat')
-		socket.connect()
+		console.log(auth);
+		loadPage("chat");
+		socket.connect();
 	} else {
-		loadPage('home')
+		loadPage("home");
 	}
 }
 
 window.onload = () => {
 	//hide the loader
-	main()
-}
+	main();
+};
 //===========EVENT LISTENERS=============//
 
 document.addEventListener("click", e => {
@@ -50,7 +50,7 @@ document.addEventListener("click", e => {
 			localStorage.setItem("username", username);
 			socket.disconnect();
 			loadPage("home");
-			flash("Successfully signed out", "success")
+			flash("Successfully signed out", "success");
 			break;
 
 		case "send-button":
@@ -75,37 +75,36 @@ async function authenticateUser(username) {
 		console.log("returning false");
 		return false;
 	} else {
-		toggleLoader()
-		const user = await fetchUser(username)
-		toggleLoader()
-		return user
+		toggleLoader();
+		const user = await fetchUser(username);
+		toggleLoader();
+		return user;
 	}
 }
 
-async function logUserIn(username){
-	if (username.length === 0){
+async function logUserIn(username) {
+	if (username.length === 0) {
 		flash("Username cannot be empty");
 		return;
 	}
-	const userExists = await authenticateUser(username)
+	const userExists = await authenticateUser(username);
 	console.log(userExists);
 	if (userExists) {
-		loadPage('chat')
-		socket.connect()
-		flash(`Logged in as ${userExists.username}`, "success")
+		loadPage("chat");
+		socket.connect();
+		flash(`Logged in as ${userExists.username}`, "success");
 	} else {
-		loadPage('login')
-		flash(`User ${username} does not exist`)
+		loadPage("login");
+		flash(`User ${username} does not exist`);
 	}
 }
 
-
 function toggleLoader() {
-	document.querySelector(".loader-wrapper").classList.toggle("hidden")
+	document.querySelector(".loader-wrapper").classList.toggle("hidden");
 }
 
-//==> refactored function. Should clean 
-function flash(message,verb){
+//==> refactored function. Should clean
+function flash(message, verb) {
 	/* const flashBox = document.querySelector("#flash-box");
 	flashBox.innerHTML = message;
 	const el = document.createElement('div')
@@ -117,19 +116,19 @@ function flash(message,verb){
 	new window.FlashMessage(message, verb);
 }
 
-async function fetchUser(username){
-	const res = await fetch(SERVER + "/api/users/" + username)
+async function fetchUser(username) {
+	const res = await fetch(SERVER + "/api/users/" + username);
 	try {
 		if (res.ok) {
 			console.log("fetch Successful, returning user");
-			const user = await res.json()
-			return user
+			const user = await res.json();
+			return user;
 		} else if (res.status == 400) {
 			console.log(await res.json());
-			return false
+			return false;
 		} else {
-			return await res.json()
-		}		
+			return await res.json();
+		}
 	} catch (error) {
 		console.log(error);
 	}
@@ -143,14 +142,14 @@ function createUser(username) {
 	//=>for now I'll use the sockets to create the user
 
 	//check that the username is valid
-	if (username.length === 0){
+	if (username.length === 0) {
 		flash("Username cannot be empty");
 		return;
 	}
 	if (!username || username == "null" || username == "undefined") {
 		console.log("Invalid/Empty Username");
 		loadPage("register");
-		flash(`Username cannot be "null", "undefined", or empty`)
+		flash(`Username cannot be "null", "undefined", or empty`);
 	} else {
 		//open the socket -> which also creates a new user
 		loadPage("chat");
@@ -163,7 +162,6 @@ function createUser(username) {
 	//create a new user with a post request. If there is, connect
 	//then resirect to chats page
 }
-
 
 /**
  * @param {string} pageName
@@ -207,9 +205,9 @@ socket.on("connect", () => {
 });
 
 socket.on("load-messages", chats => {
-	toggleLoader()
+	toggleLoader();
 	chats.forEach(message => appendMessage(message));
-	toggleLoader()
+	toggleLoader();
 });
 
 socket.on("message", packet => {
